@@ -1,9 +1,0 @@
-from pydantic import BaseModel
-
-class PostResponse(BaseModel):
-    id: int
-    title: str
-    content: str
-
-class MessageResponse(BaseModel):
-    message: str
