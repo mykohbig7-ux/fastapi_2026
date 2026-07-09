@@ -53,8 +53,8 @@ def get_performances(db: Session, skip: int = 0, limit: int = 100,
 
 def get_league(db: Session, league_id: int = None):
     """리그 하나를 leauge_id로 조회한다"""
-    return db.query(models.Leauge).filter(
-        models.Leauge.leauge_id == league_id
+    return db.query(models.League).filter(
+        models.League.league_id == league_id
     ).first()
 
 def get_leagues(db: Session, skip: int = 0, limit: int = 100,
