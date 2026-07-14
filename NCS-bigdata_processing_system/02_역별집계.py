@@ -11,7 +11,7 @@
 # ==============================================================================
 from database import execute_sql, subway_engine, table_count
 
-# 실행 전에 subway_raw 테이블의 존재 여부와 데이터 건수를 확인합니다.
+# 1. 실행 전에 subway_raw 테이블의 존재 여부와 데이터 건수를 확인합니다.
 def check_subway_input() -> None:
     """subway_raw 테이블의 존재 여부와 데이터 건수를 확인하는 함수"""
     try:
