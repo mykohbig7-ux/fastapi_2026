@@ -28,7 +28,7 @@ else:
 st.write('---')
 
 # 3. 단일 선택 박스
-transport = st.selectbox('Q3. 가장 빠른 교통수당은?? ', 
+transport = st.selectbox('Q3. 가장 빠른 교통수단은?? ', 
                          ['기차', '자동차', '비행기', '배'], width=300)
 
 if transport == '비행기':
