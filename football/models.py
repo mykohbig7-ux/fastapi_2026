@@ -14,7 +14,7 @@
 # 그냥 이름은 쓰는 것이 가능
 from __future__ import annotations  
 
-from database import date
+from datetime import date
 from sqlalchemy import Date, Float, ForeignKey, String
 
 # ------------------------------------------------------------------------------
