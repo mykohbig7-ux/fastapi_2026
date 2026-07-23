@@ -1,4 +1,4 @@
-# ===============================================================================
+# =================================================================================
 # football/seed_postgres_basic.py
 #
 # football/data/ 안 csv 5개를 PostgreSQL 데이터베이스에 적재하는 초기화 스크립트
@@ -10,7 +10,7 @@
 #
 #   실행할때마다 기존 테이블을 drop_all()로 삭제하고 다시 만든다
 #   DB에 중요한 데이터가 있다면 절대 실행하면 안된다.
-# ===============================================================================
+# =================================================================================
 from __future__ import annotations
 
 import csv
@@ -20,13 +20,13 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from database import Base, engine
-import models 
+import models   
 
 # 현재 파일이 들어있는 football 폴더의 절대 경로
-#    (어느 위치에서 실행하더라도 data 폴더를 안정적으로 찾기 위해 사용한다)
+#   (어느 위치에서 실행하더라도 data 폴더를 안정적으로 찾기 위해 사용한다)
 BASE_DIR = Path(__file__).resolve().parent
 
-# CSV 원본 데이터가 들어있는 데이터
+# CSV 원본 데이터가 들어있는 폴더
 DATA_DIR = BASE_DIR / "data"
 
 def parse_date(value: str) -> date:
@@ -44,14 +44,14 @@ def read_rows(filename: str) -> list[dict[str, str]]:
     CSV 파일 하나를 읽어서 딕셔너리 리스트로 변환
 
     {
-        "player_id":"1001"
+        "player_id":"1001",
         "gsis_id":"00-00234569"
         "first_name":"Aaron",
-        ...
+        ...    
     }
-
-    csv.DictReader는 첫 줄의 컬럼명을 key로 사용하므로
-    row["player_id"] 처럼 컬럼명으로 값을 가져올 수 있다.
+    
+    csv.DictReader는 첫 줄의 컬럼명을 key로 사용하므로 
+    row["player_id"] 처럼 컬럼명으로 값을 꺼낼 수 있다.
 
     """
     path = DATA_DIR / filename
@@ -71,7 +71,7 @@ def seed() -> None:
     - team_player.player_id는 player.player_id를 참조한다.
         참조 당하는 부모 테이블을 먼저 넣고,
             참조하는 자식 테이블을 나중에 넣어야 한다.
-
+    
     """
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
@@ -80,7 +80,7 @@ def seed() -> None:
     # with블록을 쓰면 작업이 끝난 뒤 세션이 자동으로 정리된다.
     with Session(engine) as session:
         # 1. player 테이블 적재
-        #   player는 performance와 team_player에서 참좀하므로 먼저 넣는다.
+        # player는 performance와 team_player에서 참조하므로 먼저 넣는다.
         players = [
             models.Player(
                 player_id=int(row["player_id"]),
@@ -93,7 +93,6 @@ def seed() -> None:
             for row in read_rows("player_data.csv")
         ]
         session.add_all(players)
-        
 
         # 2. league 테이블 적재 - league는 team에서 참조하므로 team보다 먼저
         leagues = [
@@ -103,17 +102,17 @@ def seed() -> None:
                 scoring_type=row["scoring_type"],
                 last_changed_date=parse_date(row["last_changed_date"]),
             )
-            for row in read_rows("league_data.csv")
+            for row in read_rows("league_data.csv")            
         ]
-        session.add_all(leagues)       
+        session.add_all(leagues)
 
-        # flush() 아직 commit은 하지 않았지만, 현재 세션에 쌓인 INSERT를 DB를 보낸다
-        # player와 league 행이 같은 트랙잭션 안에서 실제 테입르에 먼저 보이게 된다.
+        # flush() 아직 commit은 하지 않았지만, 현재 세션에 쌓인 INSERT를 DB로 보낸다
+        # player와 league 행이 같은 트랜잭션 안에서 실제 테이블에 먼저 보이게 된다.
         # 뒤에서 team, team_player처럼 외래키를 가진 테이블을 넣을 때
         # 참조할 부모행이 아직 없다는 오류를 피하고, 실행 순서 파악도 쉽다.
         session.flush()
 
-        # 3. team 테이블 적재 - Team는 league_id를 통해 League에 속한다.
+        # 3. team 테이블 적재 - Team은 league_id를 통해 League에 속한다.
         teams = [
             models.Team(
                 team_id=int(row["team_id"]),
@@ -124,10 +123,11 @@ def seed() -> None:
             for row in read_rows("team_data.csv")
         ]
         session.add_all(teams)
-        
+
         session.flush()
 
-        # 4. team_player 연결 테이블 적재 
+
+        # 4. team_player 연결 테이블 적재
         # Team과 Player의 다대다 관계를 표현하는 중간 테이블
         team_players = [
             models.TeamPlayer(
@@ -140,7 +140,7 @@ def seed() -> None:
         session.add_all(team_players)
 
         # 5. performance 테이블 적재
-        # performance는 player_id로 Player를 참조한다.
+        # Performance는 player_id로 Player를 참조한다.
         performances = [
             models.Performance(
                 performance_id=int(row["performance_id"]),

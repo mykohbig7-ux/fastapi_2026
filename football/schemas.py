@@ -1,16 +1,16 @@
-# ===============================================================================
+# ==========================================================================
 # football/schemas.py
-#
+# 
 # "API응답으로 어떤 모양의 JSON을 내보낼지"를 정의하는 파일
 # 
 # models.py의 SQLAlchemy 모델은 DB 테이블 구조를 표현한다.
-# schemas.py의 Pydantic 모델은 클라이언트에게 보여줄 응답구조를 표현한다.
-# 
-# 같은 player라는 이름을 쓰더라도 역할이 다르다!
+# schemas.py의 Pydantic 모델은 클라이언트에게 보여줄 응답 구조를 표현한다.
+#
+# 같은 Player라는 이름을 쓰더라도 역할이 다르다!
 # - models.Player : DB의 player 테이블과 매핑되는 ORM 클래스
 # - schemas.Player : API 응답 JSON 모양을 검증/직렬화하는 Pydantic 클래스
-# 
-# ===============================================================================
+#
+# ==========================================================================
 from pydantic import BaseModel, ConfigDict, Field
 from typing import List
 from datetime import date
@@ -22,9 +22,9 @@ class Performance(BaseModel):
     FastAPI가 응답모델 보고 ORM 객체의 속성을 읽어 JSON으로 바꾼다.
     """
     model_config = ConfigDict(from_attributes=True)
-    Performance_id : int
+    performance_id : int
     player_id : int
-    week_number : int
+    week_number : str
     fantasy_points : float
     last_changed_date : date
 
@@ -38,7 +38,7 @@ class PlayerBase(BaseModel):
     position : str
     last_changed_date : date
 
-# 선수 상세 응답 - 기본 정보에 성적 목록을 함께 포함된다.
+# 선수 상세 응답 - 기본 정보에 성적 목록을 함께 포함한다.
 class Player(PlayerBase):
     model_config = ConfigDict(from_attributes=True)
 
@@ -59,7 +59,7 @@ class Team(TeamBase):
     model_config = ConfigDict(from_attributes=True)
 
     # Team 응답에는 이 팀에 속한 선수 목록을 함께 담을 수 있다.
-    player : List[PlayerBase] = Field(default_factory=list)
+    players : List[PlayerBase] = Field(default_factory=list)
 
 # 리그 응답 - 리그 기본 정보와 소속 팀 목록을 함께 반환
 class League(BaseModel):
@@ -70,8 +70,9 @@ class League(BaseModel):
     last_changed_date : date
 
     # 리그 응답에는 소속 팀 목록을 함께 담는다.
-    # main.py /v0/league/{league_id} 응답에서 이 관계가 사용된다.
+    # main.py /v0/leagues/{league_id} 응답에서 이 관계가 사용된다.
     teams : List[TeamBase] = Field(default_factory=list)
+
 # 카운트 API 응답 전용 모델 - 테이블별 전체 개수를 담는다.
 class Counts(BaseModel):
     league_count : int
