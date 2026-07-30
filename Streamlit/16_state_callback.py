@@ -35,6 +35,7 @@ with col2:
 
 with col3:
     st.button('리셋', on_click=reset)
+    
 
 # st.metric : 카드형태로 보여주는 위젯
 st.metric('현재 값', st.session_state.count)
