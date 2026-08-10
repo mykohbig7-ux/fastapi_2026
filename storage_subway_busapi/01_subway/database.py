@@ -13,7 +13,7 @@
 # 라이브러리 불러오기
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base
+from todo.models import Base
 
 # DB_URL 연결
 DB_URL = 'postgresql://postgres:1234@localhost:5432/subwaydb'

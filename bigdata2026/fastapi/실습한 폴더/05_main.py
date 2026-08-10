@@ -1,6 +1,6 @@
 
-from schema.response import TodoResponse
-from schema.request import TodoCreateRequest, TodoUpdateRequest
+from todo.schema.response import TodoResponse
+from todo.schema.request import TodoCreateRequest, TodoUpdateRequest
 from fastapi import FastAPI, status, HTTPException
 
 app = FastAPI()

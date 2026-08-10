@@ -7,7 +7,7 @@
 import os
 import pandas as pd 
 from database import get_session
-from models import BusStop
+from todo.models import BusStop
 
 BASE_DIR = os.getcwd()
 INPUT_PATH = os.path.join(BASE_DIR, 'input', 'bus_stop.csv')

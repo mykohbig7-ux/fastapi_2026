@@ -6,7 +6,7 @@
 
 from fastapi import FastAPI
 from database import engine
-import models
+import todo.models as models
 from routers import users, items
 
 models.Base.metadata.create_all(bind=engine)

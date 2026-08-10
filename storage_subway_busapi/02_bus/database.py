@@ -11,7 +11,7 @@
 # =======================================================
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base
+from todo.models import Base
 
 DB_URL = 'postgresql://postgres:1234@localhost:5432/busapidb'
 # echo=False --> 내부적으로 실행되는 SQL로그를 콘솔에 찍지 않는다(True로 바꾸면 디버깅에 유용)

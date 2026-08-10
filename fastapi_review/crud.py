@@ -11,7 +11,7 @@
 # ===================================================================================
 from sqlalchemy.orm import Session
 from pwdlib import PasswordHash
-import models, schemas # fastapi_review/안에 있는 파일들 model.py, schemas.py
+import todo.models as models, schemas # fastapi_review/안에 있는 파일들 model.py, schemas.py
 
 pwd_hasher = PasswordHash.recommended() # pwdlib이 권장하는 해싱 알고리즘(argon2) 자동 선택
 

@@ -7,7 +7,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 from datetime import date
-import models
+import todo.models as models
 
 def get_player(db: Session, player_id: int):
     """player_id 하나로 선수 1명을 조회한다. 없으면 None을 반환"""

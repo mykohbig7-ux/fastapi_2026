@@ -10,7 +10,7 @@ import os
 import pandas as pd
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from database import engine
-from models import SubwayRaw
+from todo.models import SubwayRaw
 
 # 경로 설정 및 기본값 설정
 BASE_DIR = os.getcwd()

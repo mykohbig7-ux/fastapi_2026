@@ -1,5 +1,5 @@
-from schema.request import ArticleRequest, ArticleUpdateRequest
-from schema.response import ArticleResponse
+from todo.schema.request import ArticleRequest, ArticleUpdateRequest
+from todo.schema.response import ArticleResponse
 from fastapi import FastAPI, HTTPException, status
 
 app = FastAPI(
