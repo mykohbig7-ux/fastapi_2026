@@ -1,10 +1,10 @@
 '''
-======================================================================================
-services/user_service.py
+========================================================================================
+repositories/user_service.py
 
 회원가입/로그인/토근재발급/로그아웃의 업무 규칙을 담당하는 계층
 
-======================================================================================
+========================================================================================
 '''
 from fastapi import HTTPException, status
 from models import User
@@ -18,7 +18,7 @@ class UserService:
         self.repository = repository
 
     def signup(self, body: UserSignUpRequest) -> User:
-        """회원가입"""
+        """회원 가입"""
         if self.repository.find_by_email(body.email):
             # 이메일 중복 확인 -> 이미 존재하면 409(Conflict)로 거부한다.
             raise HTTPException(status.HTTP_409_CONFLICT, detail='이미 사용 중인 이메일입니다.')
@@ -41,7 +41,7 @@ class UserService:
         access_token = create_access_token(user_id=user.id)
         refresh_token = create_refresh_token(user_id=user.id)
 
-        # refresh_token을 DB에 저장한다. --> 로그아웃이 가능하다! 
+        # refresh_token을 DB에 저장한다. --> 로그아웃이 가능하다!
         user.refresh_token = refresh_token
         self.repository.save(user)
 
@@ -49,12 +49,12 @@ class UserService:
 
     def refresh(self, refresh_token: str) -> dict:
         """
-        access token이 만료했을 때, 재로그인 없이 새 access token만 발급받는 기능
+        access token이 만료됐을 때, 재로그인 없이 새 access token만 발급받는 기능
         1번째 검증: decode_token(..., expected_type='refresh') -> 서명이 유효하고, 만료되지 않은,
                     'refresh'타입이 맞는지 확인 (access token을 넣으면 거부된다.)
         2번째 검증: DB에 저장된 값과 일치하는지 확인 -> 로그아웃을 했거나 이미 폐기된 토큰이면,
                     서명 자체는 통과되어도 DB에 없으니 거부된다.
-
+        
         """
         user_id = decode_token(refresh_token, expected_type='refresh')
         user = self.repository.find_by_id(user_id)
@@ -62,7 +62,7 @@ class UserService:
         if not user or user.refresh_token != refresh_token:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
-                detail='유효하지 않은 refresh token입니다. 다시 로그인해주세요!'
+                detail='유효하지 않은 refresh token 입니다. 다시 로그인해주세요!'
             )
 
         return {'access_token': create_access_token(user_id=user.id)} # 새 access token 발급
@@ -70,9 +70,9 @@ class UserService:
     def logout(self, refresh_token: str) -> None:
         """
         DB에 저장해둔 refresh_token을 지워서 "로그아웃"을 구현
-        (쿠키/세션 방식이 아니라 DB기반이라는 것이 핵심이다.
+        (쿠키/세션 방식이 아니라 DB기반이라는 것이 핵심이다. 
         JWT는 stateless, 서버가 스스로 토큰을 무효화한다는 개념이 원래는 없다. 
-        보안을 위해 refresh_token 만큼은 DB로 추적해서 로그아웃을 실제로 동작하게 만든다.
+        보안을 위해 refresh_token 만큼은 DB로 추적해서 로그아웃을 실제로 동작하게 만든다. 
         access_token 자체는 만료 전까지는 여전히 유효하다는 점이 한계다.)
         """
         user_id = decode_token(refresh_token, expected_type='refresh')

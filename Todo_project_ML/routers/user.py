@@ -1,13 +1,13 @@
 '''
-=========================================================================
+====================================================================================================
 routers/user.py
 
 HTTP 요청/응답 담당
-회원가입/로그인/토큰재발급/로그아웃 --> UserSevice에서 진행한다.
-=========================================================================
+회원가입/로그인/토큰재발급/로그아웃 --> UserSevice에서 진행한다. 
+=====================================================================================================
 '''
 # BackgroundTasks : 응답을 먼저 클라이언트에게 보내고, 그 이후에도 처리해도 되는 작업을 뒤에서 실행하게.
-from fastapi import APIRouter, status,Depends, BackgroundTasks
+from fastapi import APIRouter, status, Depends, BackgroundTasks
 from schema.request import UserSignUpRequest, UserLoginRequest, RefreshTokenRequest
 from schema.response import UserSignUpResponse
 from database.db_connection import get_session
@@ -27,16 +27,16 @@ def send_welcome_email(email: str):
     클라이언트는 이 5초를 안 기다리고 바로 응답을 받는다.
     """
     import time
-    time.sleep(5) 
+    time.sleep(5)  
     print(f'Send welcome email to {email}...')
 
-@router.post('/user/signup', status_code=status.HTTP_201_CREATED, response_model=UserSignUpResponse)
+@router.post('/users/signup', status_code=status.HTTP_201_CREATED, response_model=UserSignUpResponse)
 def signup_user_handler(
     body: UserSignUpRequest,
     background_tasks: BackgroundTasks,
     service: UserService = Depends(get_user_service),
 ):
-    user = service.signup(body)  # 이메일 중복 체크, 비밀번호 해싱 등 처리
+    user = service.signup(body) # 이메일 중복 체크, 비밀번호 해싱 등 처리
     # 라우터는 그 결과(user)를 받아서 백그라운드 태스크만 등록하고 반환
     background_tasks.add_task(send_welcome_email, user.email)
     return user

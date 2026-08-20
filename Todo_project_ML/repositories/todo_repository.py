@@ -1,6 +1,6 @@
 '''
-======================================================================================
-repositories/todo_respository.py
+========================================================================================
+repositories/todo_repository.py
 
 todo테이블에 대한 DB쿼리만 담당하는 계층
 쿼리 결과가 있으면 반환, 없으면 None(또는 빈 리스트) 반환까지만 책임지고,
@@ -10,7 +10,7 @@ todo테이블에 대한 DB쿼리만 담당하는 계층
     HTTPException 같은 웹(HTTP) 관련 개념을 몰라도 된다.
     나중에 이 프로젝트를 웹이 아닌 다른 방식으로도 사용하면 Repository만 그대로 재사용한다.
     Service/Router만 수정하면 된다.
-======================================================================================
+========================================================================================
 '''
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -19,7 +19,7 @@ from models import Todo
 class TodoRepository:
     def __init__(self, session: Session):
         # 세션을 생성자에서 미리 받아 인스턴스 변수(self.session)에 저장해둔다.
-        #   아래 메서드를이 매번 session을 매개변수로 안 받아도 된다.
+        #   아래 메서드들이 매번 session을 매개변수로 안 받아도 된다.
         self.session = session
 
     def find_all_by_user(self, user_id: int) -> list[Todo]:
@@ -50,5 +50,5 @@ class TodoRepository:
         return todo
 
     def delete(self, todo: Todo) -> None:
-        self.session.delete(todo) # todo를 삭제
+        self.session.delete(todo)  # todo를 삭제
         self.session.commit()

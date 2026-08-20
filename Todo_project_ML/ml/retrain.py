@@ -1,10 +1,10 @@
 '''
 ml/retrain.py
------------------------
+--------------------
 - 사용자가 실제로 수정한 카테고리(final_category)를 새 학습 데이터로 삼아 모델을 재학습한다.
 - 이 스크립트도 FastAPI 서버와 분리된 별도 프로세스로 실행한다.
     (수동 실행 -> 이후 필요하면 cron/스케줄러로 자동화)
-- 시간이 지날수록 실제로 만든 Todo데이터가 쌓이면서 모델이 점점 더 우리 말투/패턴에 맞게 똑똑해지느
+- 시간이 지날수록 실제로 만든 Todo데이터가 쌓이면서 모델이 점점 더 우리 말투/패턴에 맞게 똑똑해지는 
     과정을 볼 수가 있다.
 '''
 import json
@@ -22,7 +22,7 @@ from models import Todo
 from ml.train_model import build_pipeline, get_next_version, ARTIFACTS_DIR, DATA_PATH
 
 def load_original_data() -> pd.DataFrame:
-    """최초 학습에 사용한 샘플 데이터, 재학습때도 계속 기반 데이터로 포함시킨다."""
+    """최초 학습에 사용한 샘플 데이터. 재학습때도 계속 기반 데이터로 포함시킨다."""
     df = pd.read_csv(DATA_PATH)
     return df[['title', 'category']]
 
@@ -31,7 +31,7 @@ def load_user_corrected_data() -> pd.DataFrame:
     사용자가 final_category를 직접 지정한(=확인/수정한) Todo만 새 학습 데이터로 사용한다.
 
     FastAPI 요청 흐름 밖에서 실행되므로 SessionFactory()를 직접 호출해서 세션을 만들고,
-    끝나면 직접 close()한다.
+    끝나면 직접 close()한다.    
     """
     session = SessionFactory()
     try:
@@ -72,14 +72,14 @@ def main():
     )
 
     pipeline = build_pipeline()
-    pipeline.fit(X_train, y_train) # 학습
+    pipeline.fit(X_train, y_train)  # 학습
 
-    y_pred = pipeline.predict(X_test) # 예측
+    y_pred = pipeline.predict(X_test)   # 예측
     accuracy = accuracy_score(y_test, y_pred) # 정답과 예측값을 비교해서 정확도 구한다.
     print(f'[INFO] 재학습 후 테스트 정확도: {accuracy:.3f}')
     print(classification_report(y_test, y_pred))
 
-    # 버전 번호는 train_model.py가 만들어준 다음부터 자동으로 이어진다.
+    # 버전 번호는 train_model.py가 만들어둔 다음부터 자동으로 이어진다.
     version = get_next_version(ARTIFACTS_DIR)
     model_path = ARTIFACTS_DIR / f'model_v{version}.pkl'
     joblib.dump(pipeline, model_path)

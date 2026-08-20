@@ -1,12 +1,12 @@
 '''
-======================================================================================
-services/todo_service.py
+========================================================================================
+repositories/todo_service.py
 
 Todo 관련 "업무 규칙"을 담당하는 계층
 DB 쿼리 자체는 직접하지 않고, TodoRepository에게 다 위임한다.
-없으면 "404 에러를 낸다" 수정할 때 "title/is_done만 부분 반영한다" 등의 판단들을 정의
+없으면 "404 에러를 낸다." 수정할 때 "title/is_done만 부분 반영한다" 등의 판단들을 정의
 이 파일은 FastAPI의 요청/응답 객체를 직접 다루지 않는다. (routers에서 다룬다.)
-======================================================================================
+========================================================================================
 '''
 from fastapi import HTTPException, status
 from models import Todo
@@ -20,6 +20,7 @@ class TodoService:
     def __init__(self, repository: TodoRepository, category_service: CategoryPredictionService | None = None):
         self.repository = repository
         self.category_service = category_service
+        
 
     def get_todos(self, user_id: int) -> list[Todo]:
         # Repository 호출을 그대로 전달하기만 하는 메서드
@@ -33,14 +34,14 @@ class TodoService:
         todo = self.repository.find_by_id(todo_id, user_id)
         if todo is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail='Todo not found')
-        
+
         return todo
 
     def create_todo(self, body: TodoCreateRequest, user_id: int) -> Todo:
         """
         --- MLOps 확장 지점 ---
         category_service가 주입되어 있을 때만(=모델이 로드되어 있을 때만)
-        제목을 넣어 카테고리를 예측한다. 
+        제목을 넣어 카테고리를 예측한다.         
         """
         predicted_category = None
         if self.category_service is not None:
@@ -56,16 +57,17 @@ class TodoService:
         """
         todo = self.get_todo(todo_id, user_id)
         todo.final_category = category  # 확인/수정
-        return self.repository.save(todo) # DB에 저장
-
+        return self.repository.save(todo) # DB에 저장(서비스가 바로 저장 x -> 레파지토리한테 맡긴다)
+    
     def update_todo(self, todo_id: int, body: TodoUpdateRequest, user_id: int) -> Todo:
         todo = self.get_todo(todo_id, user_id)
         if body.title is not None:  # 수정할 데이터가 있다면
-            todo.title = body.title  # 할 일 수정
+            todo.title = body.title  # 할일 수정
         if body.is_done is not None:
-            todo.is_done = body.is_done  # 할 일 완료/미완료 수정
+            todo.is_done = body.is_done  # 할일 완료/미완료 수정
         return self.repository.save(todo) # DB에 저장(서비스가 바로 저장 x -> 레파지토리한테 맡긴다)
 
     def delete_todo(self, todo_id: int, user_id: int) -> None:
-        todo = self.get_todo(todo_id, user_id) # 삭제할 할 일 목록을 찾아온다.
+        todo = self.get_todo(todo_id, user_id) # 삭제할 할일 목록을 찾아온다.
         self.repository.delete(todo)
+
