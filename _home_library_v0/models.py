@@ -4,7 +4,7 @@ home_library_v0 / models.py
 예광탄 방식을 활용한 아주 얇은 코드
 스키마, 테이블 만들기 (ORM)
 '''
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 # sqlalchemy의 String --> 최대 길이를 지정해야 한다. 짧고 정해진 범위의 문자열에 적합하다.
 #           DB 쪽에서 길이 초과 시 에러가 나서 실수로 너무 긴 값이 들어가는 것을 막아주는 안전장치 역할
@@ -37,7 +37,7 @@ class Book(Base):
     recognition_status: Mapped[str] = mapped_column(String(20), default='confirmed')
     # 이 책이 언제 등록되었는지 자동 기록
     # default=datetime.utc --> 저장되는 순간의 시각으로 자동으로 채워준다.
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utc)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # 관계 설정
     # cascade='all, delete-orphan' --> 책이 삭제되면 그 책에 딸린 독서상태/리뷰도 같이 자동 삭제
