@@ -11,3 +11,6 @@ wheels/
 .venv
 
 .env
+
+_home_library_v1/.env
+_home_library_v2/.env
