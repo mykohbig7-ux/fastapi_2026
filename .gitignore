@@ -7,10 +7,14 @@ wheels/
 *.egg-info
 *.pkl
 
-# Virtual environments
-.venv
+# 루트 .gitignore
 
-.env
+# 모든 하위 폴더의 .env, uploads/ 를 전부 제외
+**/.env
+**/uploads/
 
-_home_library_v1/.env
-_home_library_v2/.env
+# 파이썬 공통
+**/__pycache__/
+**/.venv/
+*.pyc
+**/.pytest_cache/
