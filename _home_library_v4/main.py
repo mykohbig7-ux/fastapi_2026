@@ -2,7 +2,7 @@
 home_library_v4 / main.py
 -----------------------------
 기존 JSON API 라우터(/books/lookup, /books/register, /books) 응답형태 그대로 두고,
-새로 추가되는 HTML 라우터(/ui/books/lookup, /ul/books/register, /shelf)를 추가
+새로 추가되는 HTML 라우터(/ui/books/lookup, /ui/books/register, /shelf)를 추가
 '''
 from pathlib import Path
 from fastapi import Depends, FastAPI, File, Form, UploadFile, status, HTTPException, Request
@@ -129,11 +129,11 @@ def ui_lookup_submit(request: Request, isbn: str=Form(...), db: Session=Depends(
         context={'result': result, 'isbn_input': isbn},
     )
 
-@app.get('/ul/books/register')
+@app.get('/ui/books/register')
 def ui_register_form(request: Request):
     return templates.TemplateResponse(request=request, name='register.html', context={})
 
-@app.post('/ul/books/register')
+@app.post('/ui/books/register')
 def ui_register_submit(
     request: Request,
     isbn: str=Form(...),

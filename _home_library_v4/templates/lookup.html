@@ -5,7 +5,7 @@
 {% block content %}
 <h2 class="mb-4">ISBN으로 빠르게 등록하기</h2>
 <div class="card form-card p-4 mb-4" style="max-width: 600px;">
-    <form action="/ul/books/lookup" method="post" class="row g-2">
+    <form action="/ui/books/lookup" method="post" class="row g-2">
         <div class="col-auto flex-grow-1">
             <input type="text" name="isbn" class="form-control" placeholder="ISBN 입력 (예: 9791190090018)" value="{{ isbn_input or '' }}">
         </div>
