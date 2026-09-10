@@ -6,7 +6,9 @@ dist/
 wheels/
 *.egg-info
 *.pkl
+.env
 
+# Virtual envuronments
 .venv
 
 # 루트 .gitignore
